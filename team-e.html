@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>shift-manager 3分プレゼン</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #0066FF;
+  --color-accent:  #FF6B35;
+  --color-text:    #1A1A1A;
+  --color-text-sub:#666666;
+  --color-bg:      #FFFFFF;
+  --color-bg-sub:  #F5F5F5;
+  --color-border:  #E0E0E0;
+  --color-ok:      #1E9E5A;
+  --space-xs: 0.5rem; --space-sm: 1rem; --space-md: 2rem; --space-lg: 4rem; --space-xl: 6rem;
+  --radius-sm: 4px; --radius-md: 8px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Noto Sans JP', sans-serif; color: var(--color-text); line-height: 1.7; letter-spacing: 0.02em; background: var(--color-bg); }
+h1, h2, h3 { word-break: keep-all; overflow-wrap: break-word; line-height: 1.35; }
+
+/* nav */
+.nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0.7rem var(--space-md); transition: background 0.3s ease, box-shadow 0.3s ease; }
+.nav.is-scrolled { background: var(--color-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.nav__logo { display: flex; align-items: center; gap: 0.4rem; font-weight: 900; font-size: 1rem; color: var(--color-text); }
+.nav__logo .material-icons { color: var(--color-primary); }
+.nav__time { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; font-weight: 700; color: var(--color-text-sub); }
+
+/* section */
+.section { padding: var(--space-xl) var(--space-md); }
+.section:nth-of-type(even) { background: var(--color-bg-sub); }
+.section__inner { max-width: 1080px; margin: 0 auto; }
+.section__num { display: inline-block; font-size: 0.8rem; font-weight: 900; color: var(--color-primary); letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+.section__title { font-size: clamp(1.6rem, 3.2vw, 2.4rem); font-weight: 900; margin-bottom: var(--space-md); }
+.section__note { font-size: 0.9rem; color: var(--color-text-sub); margin-top: var(--space-sm); }
+
+/* hero */
+.section--hero { background: var(--color-primary); color: var(--color-bg); min-height: 78vh; display: flex; align-items: center; }
+.hero__tag { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.15); padding: 0.4rem 1rem; border-radius: 999px; font-weight: 700; font-size: 0.85rem; margin-bottom: var(--space-md); }
+.section--hero h1 { font-size: clamp(2rem, 5vw, 3.6rem); color: var(--color-bg); margin-bottom: var(--space-sm); }
+.hero__sub { font-size: clamp(1rem, 2vw, 1.3rem); color: rgba(255,255,255,0.92); font-weight: 700; }
+.hero__oneline { margin-top: var(--space-md); display: inline-flex; align-items: center; gap: 0.6rem; background: var(--color-bg); color: var(--color-text); padding: 0.8rem 1.4rem; border-radius: var(--radius-md); font-weight: 700; }
+.hero__oneline .material-icons { color: var(--color-accent); }
+
+/* table */
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+.tbl th, .tbl td { padding: 0.9rem 1rem; text-align: left; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+.tbl thead th { background: var(--color-text); color: var(--color-bg); font-weight: 700; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl .col-before { color: var(--color-text-sub); }
+.tbl .col-after { font-weight: 700; }
+.tbl .ico-x { color: var(--color-accent); vertical-align: middle; font-size: 1.1rem; }
+.tbl .ico-o { color: var(--color-ok); vertical-align: middle; font-size: 1.1rem; }
+
+/* goal cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-md); }
+.card { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); background: var(--color-bg); text-align: center; }
+.card .material-icons { font-size: 2.6rem; color: var(--color-primary); margin-bottom: var(--space-xs); }
+.card__title { font-size: 1.15rem; font-weight: 900; margin-bottom: var(--space-xs); }
+.card__text { font-size: 0.9rem; color: var(--color-text-sub); }
+
+/* flow diagram */
+.flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
+.flow__step { flex: 1 1 150px; border: 2px solid var(--color-primary); border-radius: var(--radius-md); padding: var(--space-sm); background: var(--color-bg); text-align: center; }
+.flow__icon { font-size: 1.8rem; color: var(--color-primary); }
+.flow__label { font-size: 0.95rem; font-weight: 700; margin-top: 0.2rem; }
+.flow__sub { font-size: 0.78rem; color: var(--color-text-sub); }
+.flow__arrow { display: flex; align-items: center; justify-content: center; color: var(--color-accent); padding: 0 0.2rem; }
+.flow__arrow .material-icons { font-size: 2rem; }
+.flow__owner { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; margin-top: 0.3rem; }
+.owner--ai { background: var(--color-primary); color: #fff; }
+.owner--mgr { background: var(--color-accent); color: #fff; }
+
+/* feature table badges */
+.badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: var(--radius-sm); }
+.badge--must { background: var(--color-primary); color: #fff; }
+.badge--want { background: var(--color-bg-sub); color: var(--color-text-sub); border: 1px solid var(--color-border); }
+
+/* effect (before/after big) */
+.effect { display: flex; align-items: center; justify-content: center; gap: var(--space-md); flex-wrap: wrap; }
+.effect__box { flex: 1 1 240px; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); text-align: center; background: var(--color-bg); }
+.effect__box--after { border-color: var(--color-primary); border-width: 2px; }
+.effect__label { font-size: 0.85rem; font-weight: 700; color: var(--color-text-sub); }
+.effect__big { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; margin: 0.2rem 0; }
+.effect__big--after { color: var(--color-primary); }
+.effect__arrow { color: var(--color-accent); font-size: 2.4rem; }
+
+/* scope two-col */
+.scope { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+.scope__col { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-md); background: var(--color-bg); }
+.scope__head { display: flex; align-items: center; gap: 0.5rem; font-weight: 900; font-size: 1.1rem; margin-bottom: var(--space-sm); }
+.scope__col--do .scope__head .material-icons { color: var(--color-ok); }
+.scope__col--dont .scope__head .material-icons { color: var(--color-accent); }
+.scope__col ul { list-style: none; }
+.scope__col li { padding: 0.4rem 0; border-bottom: 1px dashed var(--color-border); font-size: 0.95rem; }
+.scope__col li:last-child { border-bottom: none; }
+
+/* cta */
+.section--cta { background: var(--color-primary); color: var(--color-bg); text-align: center; }
+.section--cta .section__title { color: var(--color-bg); }
+.section--cta .hero__oneline { margin-top: var(--space-md); }
+
+/* footer */
+.footer { background: var(--color-text); color: var(--color-bg); padding: var(--space-md); }
+.footer__inner { max-width: 1080px; margin: 0 auto; text-align: center; font-size: 0.85rem; }
+
+/* fade-in */
+.fi { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fi.is-visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  .section { padding: var(--space-lg) var(--space-md); }
+  .scope { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; }
+  .flow__arrow { transform: rotate(90deg); padding: 0.2rem 0; }
+  .tbl { font-size: 0.85rem; }
+  .tbl th, .tbl td { padding: 0.6rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__logo"><span class="material-icons">calendar_month</span>shift-manager</div>
+  <div class="nav__time"><span class="material-icons" style="font-size:1rem;">schedule</span>3分プレゼン</div>
+</header>
+
+<main>
+  <!-- 1. Title / 一言で何のスキルか -->
+  <section class="section section--hero">
+    <div class="section__inner">
+      <span class="hero__tag"><span class="material-icons" style="font-size:1rem;">bolt</span>Claude Code スキル</span>
+      <h1>シフト作成を<br>「店長ほぼノータッチ」へ</h1>
+      <p class="hero__sub">飲食店アルバイトのシフト管理を、希望集計からたたき台づくりまで自動化するスキル</p>
+      <div class="hero__oneline"><span class="material-icons">flag</span>目指す姿：希望が出揃えば、シフト表がもう完成している</div>
+    </div>
+  </section>
+
+  <!-- 2. 何のスキルか（一言＋対象） -->
+  <section class="section">
+    <div class="section__inner fi">
+      <span class="section__num">WHAT — 何をするスキルか</span>
+      <h2 class="section__title">希望を集めて、シフト案を自動で組む</h2>
+      <table class="tbl">
+        <tbody>
+          <tr><th style="width:30%;">ひとことで</th><td>シフト希望の<strong>集計</strong>と、人数ルールに沿った<strong>シフト表たたき台の自動生成</strong>を行うスキル</td></tr>
+          <tr><th>使う人</th><td>店長1人（確認・承認） ／ アルバイト15人（希望入力・変更報告）</td></tr>
+          <tr><th>置き換える手段</th><td>LINEでの希望受け取り ＋ エクセルへの手作業転記</td></tr>
+          <tr><th>判断のルール</th><td>必要人数：<strong>平日5人以上・週末8人以上</strong>（最終決定は店長）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. 課題 → 解決（Before/After 表） -->
+  <section class="section">
+    <div class="section__inner">
+      <span class="section__num fi">WHY — 解決する課題</span>
+      <h2 class="section__title fi">「バラバラ・手作業・属人化」をなくす</h2>
+      <table class="tbl fi">
+        <thead>
+          <tr><th style="width:22%;">場面</th><th style="width:39%;">いま（Before）</th><th style="width:39%;">このスキル（After）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>希望の受取</td><td class="col-before"><span class="material-icons ico-x">close</span> LINEで書式バラバラ・漏れ不明</td><td class="col-after"><span class="material-icons ico-o">check_circle</span> 統一書式で入力漏れをその場で検出</td></tr>
+          <tr><td>集計・転記</td><td class="col-before"><span class="material-icons ico-x">close</span> 手作業転記でミス・時間がかかる</td><td class="col-after"><span class="material-icons ico-o">check_circle</span> 自動集計・不足日を自動アラート</td></tr>
+          <tr><td>シフト作成</td><td class="col-before"><span class="material-icons ico-x">close</span> 店長が一から考えて埋める</td><td class="col-after"><span class="material-icons ico-o">check_circle</span> たたき台を自動生成・店長は調整だけ</td></tr>
+          <tr><td>変更・欠勤</td><td class="col-before"><span class="material-icons ico-x">close</span> 連絡が点在し管理できない</td><td class="col-after"><span class="material-icons ico-o">check_circle</span> 一元受付＋代替候補を自動提示</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. 目指すもの（3本柱カード） -->
+  <section class="section">
+    <div class="section__inner">
+      <span class="section__num fi">GOAL — このスキルが目指すもの</span>
+      <h2 class="section__title fi">3つのゴール</h2>
+      <div class="cards">
+        <div class="card fi"><span class="material-icons">touch_app</span><h3 class="card__title">店長の手間ゼロへ</h3><p class="card__text">希望が出揃えば、ほぼ手を動かさずシフト表が完成している状態。</p></div>
+        <div class="card fi"><span class="material-icons">hub</span><h3 class="card__title">情報の一元化</h3><p class="card__text">希望・変更・欠勤をすべて1か所に集約。LINEとエクセルの往復をなくす。</p></div>
+        <div class="card fi"><span class="material-icons">verified</span><h3 class="card__title">ミスと属人化の排除</h3><p class="card__text">転記ミス・記入漏れを仕組みで防ぎ、誰でも同じ品質で運用できる。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 仕組み（フロー図） -->
+  <section class="section">
+    <div class="section__inner">
+      <span class="section__num fi">HOW — 仕組み（処理の流れ）</span>
+      <h2 class="section__title fi">5ステップで完結</h2>
+      <div class="flow fi">
+        <div class="flow__step"><span class="material-icons flow__icon">edit_note</span><div class="flow__label">希望入力</div><div class="flow__sub">統一書式で受付</div><div class="flow__owner owner--ai">スキル</div></div>
+        <div class="flow__arrow"><span class="material-icons">arrow_forward</span></div>
+        <div class="flow__step"><span class="material-icons flow__icon">summarize</span><div class="flow__label">自動集計</div><div class="flow__sub">人数・漏れを判定</div><div class="flow__owner owner--ai">スキル</div></div>
+        <div class="flow__arrow"><span class="material-icons">arrow_forward</span></div>
+        <div class="flow__step"><span class="material-icons flow__icon">auto_awesome</span><div class="flow__label">たたき台生成</div><div class="flow__sub">人数ルール適用</div><div class="flow__owner owner--ai">スキル</div></div>
+        <div class="flow__arrow"><span class="material-icons">arrow_forward</span></div>
+        <div class="flow__step"><span class="material-icons flow__icon">fact_check</span><div class="flow__label">確認・承認</div><div class="flow__sub">調整して確定</div><div class="flow__owner owner--mgr">店長</div></div>
+        <div class="flow__arrow"><span class="material-icons">arrow_forward</span></div>
+        <div class="flow__step"><span class="material-icons flow__icon">campaign</span><div class="flow__label">公開・運用</div><div class="flow__sub">変更・欠勤対応</div><div class="flow__owner owner--ai">スキル</div></div>
+      </div>
+      <p class="section__note fi"><span class="badge badge--must" style="background:var(--color-primary);">スキル</span> 自動でこなす工程　／　<span class="badge" style="background:var(--color-accent);color:#fff;">店長</span> 人が判断する工程</p>
+    </div>
+  </section>
+
+  <!-- 6. 主な機能（表） -->
+  <section class="section">
+    <div class="section__inner">
+      <span class="section__num fi">FEATURES — 主な機能</span>
+      <h2 class="section__title fi">何ができるか</h2>
+      <table class="tbl fi">
+        <thead><tr><th style="width:30%;">機能</th><th>内容</th><th style="width:14%;">優先</th></tr></thead>
+        <tbody>
+          <tr><td>希望入力フォーマット</td><td>統一書式で受付・記入漏れ／休み希望を区別</td><td><span class="badge badge--must">MUST</span></td></tr>
+          <tr><td>希望の自動集計</td><td>提出状況・日別人数・不足アラート</td><td><span class="badge badge--must">MUST</span></td></tr>
+          <tr><td>シフト表たたき台</td><td>人数ルール＋公平性で自動生成</td><td><span class="badge badge--must">MUST</span></td></tr>
+          <tr><td>店長ダッシュボード</td><td>全体・本日・要対応をひと目で確認</td><td><span class="badge badge--must">MUST</span></td></tr>
+          <tr><td>変更・欠勤受付</td><td>連絡を一元記録し通知文を生成</td><td><span class="badge badge--must">MUST</span></td></tr>
+          <tr><td>代替スタッフ候補</td><td>欠勤時に入れる人を理由つきで提示</td><td><span class="badge badge--want">WANT</span></td></tr>
+          <tr><td>データ出力</td><td>Excel/CSV・PDF用に書き出し</td><td><span class="badge badge--want">WANT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 7. スコープ（やる／やらない 表） -->
+  <section class="section">
+    <div class="section__inner">
+      <span class="section__num fi">SCOPE — やること / やらないこと</span>
+      <h2 class="section__title fi">範囲をはっきりさせる</h2>
+      <div class="scope fi">
+        <div class="scope__col scope__col--do">
+          <div class="scope__head"><span class="material-icons">check_circle</span>やること</div>
+          <ul>
+            <li>シフト希望の集計</li>
+            <li>シフト表たたき台の自動生成</li>
+            <li>変更・欠勤の受付と通知文作成</li>
+            <li>代替候補の提示・データ出力</li>
+          </ul>
+        </div>
+        <div class="scope__col scope__col--dont">
+          <div class="scope__head"><span class="material-icons">block</span>やらないこと</div>
+          <ul>
+            <li>給与計算・勤務時間集計</li>
+            <li>LINE自動連携（統一入力に切替）</li>
+            <li>複雑な勤務ルール設定</li>
+            <li>シフトの最終決定（店長が判断）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 締め -->
+  <section class="section section--cta">
+    <div class="section__inner fi">
+      <h2 class="section__title">まとめ</h2>
+      <div class="hero__oneline"><span class="material-icons">flag</span>希望を集める → あとはスキルが組む → 店長は確認するだけ</div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">&copy; 2026 shift-manager 3分プレゼン資料</div>
+</footer>
+
+<script>
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('is-scrolled', window.scrollY > 20); });
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

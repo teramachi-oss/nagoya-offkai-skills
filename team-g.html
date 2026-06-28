@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブログ記事作成ツール</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: #1a1a2e;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8eaf0;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    label .required {
+      color: #e53e3e;
+      margin-left: 4px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #dde1e9;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #333;
+      transition: border-color 0.2s;
+      background: #fafbfc;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #4a6cf7;
+      background: #fff;
+    }
+
+    textarea { resize: vertical; line-height: 1.6; }
+
+    .options-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.05em;
+    }
+
+    .generate-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .error-msg {
+      display: none;
+      background: #fff5f5;
+      border: 1.5px solid #fc8181;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #c53030;
+      font-size: 0.9rem;
+      margin-top: 16px;
+    }
+
+    /* 結果エリア */
+    .result-card { display: none; }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e8eaf0;
+    }
+
+    .result-header h2 {
+      font-size: 1.1rem;
+      color: #1a1a2e;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* ステップバッジ */
+    .steps {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0f3ff;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.88rem;
+      color: #4a6cf7;
+      font-weight: 600;
+    }
+
+    .step .num {
+      background: #4a6cf7;
+      color: #fff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .step .arrow {
+      color: #aaa;
+      font-size: 1rem;
+    }
+
+    /* プロンプト出力 */
+    .prompt-output {
+      white-space: pre-wrap;
+      line-height: 1.8;
+      font-size: 0.93rem;
+      color: #333;
+      background: #fafbfc;
+      border: 1.5px solid #e8eaf0;
+      border-radius: 8px;
+      padding: 18px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* ボタン群 */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+      color: #fff;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-outline {
+      background: #eef2ff;
+      color: #4a6cf7;
+      border: 1.5px solid #4a6cf7;
+    }
+
+    .btn-outline:hover { background: #4a6cf7; color: #fff; }
+
+    .btn.copied {
+      background: #48bb78;
+      color: #fff;
+      border-color: #48bb78;
+    }
+
+    /* Claude.aiへのリンク */
+    .claude-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: #1a1a2e;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .claude-link:hover { opacity: 0.85; }
+
+    .hint {
+      background: #fffbeb;
+      border: 1.5px solid #f6d860;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: #7d6608;
+      margin-top: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📝 ブログ記事作成ツール</h1>
+      <p>項目を入力するだけで、Claude.ai に貼るプロンプトを自動生成します</p>
+    </header>
+
+    <!-- 入力フォーム -->
+    <div class="card">
+      <h2>記事の内容を入力してください</h2>
+
+      <div class="form-group">
+        <label>記事タイトル・テーマ <span class="required">*</span></label>
+        <input type="text" id="title" placeholder="例：〇〇セミナー参加レポート、新サービスのご紹介　など">
+      </div>
+
+      <div class="form-group">
+        <label>開催日・日付</label>
+        <input type="date" id="date">
+      </div>
+
+      <div class="form-group">
+        <label>場所・開催場所</label>
+        <input type="text" id="location" placeholder="例：東京都渋谷区〇〇ホール、オンライン開催　など">
+      </div>
+
+      <div class="form-group">
+        <label>イベント・内容の概要 <span class="required">*</span></label>
+        <textarea id="content" rows="5" placeholder="どんなイベントや内容だったか、伝えたいことを自由に書いてください。箇条書きでもOKです。&#10;例：&#10;・〇〇をテーマにしたセミナー&#10;・参加者は約50名&#10;・ワークショップもあった&#10;・とても勉強になった"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>講師・登壇者の紹介</label>
+        <textarea id="speaker" rows="3" placeholder="例：株式会社〇〇 代表取締役 田中一郎氏。〇〇の専門家で著書多数。"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>作成者の感想・コメント</label>
+        <textarea id="impression" rows="3" placeholder="例：特に〇〇の話が印象的でした。参加してよかったと感じました。次回も参加したいです。&#10;※箇条書きでもOK。記事の中に自然に盛り込まれます。"></textarea>
+      </div>
+
+      <div class="options-row">
+        <div class="form-group">
+          <label>文章のトーン</label>
+          <select id="tone">
+            <option value="です・ます調（丁寧）">です・ます調（丁寧）</option>
+            <option value="カジュアル・親しみやすい">カジュアル・親しみやすい</option>
+            <option value="である調（硬め）">である調（硬め）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>文字数のめやす</label>
+          <select id="length">
+            <option value="1000〜1500文字">1000〜1500文字</option>
+            <option value="1500〜2000文字" selected>1500〜2000文字</option>
+            <option value="2000〜2500文字">2000〜2500文字</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="generate-btn" onclick="generatePrompt()">
+        ✨ プロンプトを生成する
+      </button>
+
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <!-- 結果 -->
+    <div class="card result-card" id="resultCard">
+      <div class="result-header">
+        <h2>✅ プロンプトができました！</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step"><span class="num">1</span>下のプロンプトをコピー</div>
+        <div class="step arrow">→</div>
+        <div class="step"><span class="num">2</span>Claude.ai を開く</div>
+        <div class="step arrow">→</div>
+        <div class="step"><span class="num">3</span>貼り付けて送信</div>
+      </div>
+
+      <div class="prompt-output" id="promptOutput"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" id="copyBtn" onclick="copyPrompt()">📋 プロンプトをコピー</button>
+        <a class="claude-link" href="https://claude.ai" target="_blank" rel="noopener">🤖 Claude.ai を開く</a>
+      </div>
+
+      <div class="hint">
+        💡 <strong>使い方：</strong>「プロンプトをコピー」→「Claude.ai を開く」→ チャット入力欄に貼り付けて送信するだけで記事が完成します！
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function generatePrompt() {
+      const title = document.getElementById('title').value.trim();
+      const content = document.getElementById('content').value.trim();
+
+      if (!title) { showError('記事タイトル・テーマを入力してください。'); return; }
+      if (!content) { showError('イベント・内容の概要を入力してください。'); return; }
+
+      hideError();
+
+      const date = document.getElementById('date').value;
+      const location = document.getElementById('location').value.trim();
+      const speaker = document.getElementById('speaker').value.trim();
+      const tone = document.getElementById('tone').value;
+      const length = document.getElementById('length').value;
+
+      const impression = document.getElementById('impression').value.trim();
+
+      const dateText = date ? `・開催日：${formatDate(date)}` : '';
+      const locationText = location ? `・場所：${location}` : '';
+      const speakerText = speaker ? `・講師・登壇者：${speaker}` : '';
+      const info = [dateText, locationText, speakerText].filter(Boolean).join('\n');
+
+      const prompt =
+`以下の情報をもとに、ブログ記事を書いてください。
+
+【記事タイトル・テーマ】
+${title}
+${info ? '\n【基本情報】\n' + info : ''}
+
+【内容・概要】
+${content}
+${impression ? '\n【作成者の感想・コメント】\n' + impression + '\n※この感想を記事の中に自然な形で盛り込んでください。' : ''}
+
+【執筆条件】
+・文体：${tone}
+・文字数：${length}程度
+・読者が読みやすいよう、適切に段落を分けてください
+・見出し（【】や■など）を使って読みやすく構成してください
+・記事の最後は締めの文章で終わってください
+・タイトルは記事の先頭に書いてください
+
+記事本文のみを出力してください（説明や前置きは不要です）。`;
+
+      document.getElementById('promptOutput').textContent = prompt;
+      document.getElementById('resultCard').style.display = 'block';
+      document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('promptOutput').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = '✅ コピーしました！';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 プロンプトをコピー';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('errorMsg').style.display = 'none';
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lp-generator スキル 説明書</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: '#1E3A5F',
+          amber: '#D97B3F',
+          line: '#E4E0D8',
+          ink: '#2D2A26',
+          sub: '#6B6358',
+        },
+        fontFamily: {
+          serif: ['Shippori Mincho', 'serif'],
+          body: ['Noto Sans JP', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Noto Sans JP', sans-serif; background-color: #FFFFFF; color: #2D2A26; }
+  .serif { font-family: 'Shippori Mincho', serif; }
+  code { font-family: monospace; }
+</style>
+</head>
+<body class="antialiased">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-line">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="serif text-lg font-bold text-navy tracking-wide">lp-generator スキル説明書</div>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-sub">
+        <a href="#overview" class="hover:text-navy">概要</a>
+        <a href="#flow" class="hover:text-navy">使い方</a>
+        <a href="#hearing" class="hover:text-navy">ヒアリング項目</a>
+        <a href="#design" class="hover:text-navy">デザイン仕様</a>
+        <a href="#output" class="hover:text-navy">出力</a>
+        <a href="#tips" class="hover:text-navy">運用Tips</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-5xl mx-auto px-6 pt-16 pb-14">
+    <p class="inline-block border border-navy text-navy text-xs font-bold px-4 py-1.5 mb-6 tracking-wide">Claude Code スキル説明書</p>
+    <h1 class="serif text-3xl md:text-4xl font-bold text-navy leading-snug mb-5 tracking-wide">
+      lp-generator — 訪問先でその場にLPを生成するスキル
+    </h1>
+    <p class="text-sub text-base md:text-lg leading-relaxed max-w-3xl">
+      社労士・中小企業向けDX/AIコンサルタントが顧問先を訪問しながら、会話でヒアリングした内容をもとに、その場で単一HTMLファイルのランディングページ（LP）を生成するためのスキルです。サーバー不要・ブラウザでそのまま開けます。
+    </p>
+  </section>
+
+  <!-- Overview -->
+  <section id="overview" class="border-t border-line bg-[#FAF8F4] py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-8 tracking-wide">概要</h2>
+      <div class="grid md:grid-cols-3 gap-px bg-line">
+        <div class="bg-white p-7">
+          <p class="serif text-amber font-bold text-2xl mb-3">対象</p>
+          <p class="text-sub text-sm leading-relaxed">顧問先・商談先への訪問中。決まったフォームではなく、会話の流れの中でヒアリングしながら使う。</p>
+        </div>
+        <div class="bg-white p-7">
+          <p class="serif text-amber font-bold text-2xl mb-3">出力</p>
+          <p class="text-sub text-sm leading-relaxed">単一HTMLファイル（Tailwind CDN利用）。インストール不要で、その場でブラウザに開いて見せられる。</p>
+        </div>
+        <div class="bg-white p-7">
+          <p class="serif text-amber font-bold text-2xl mb-3">トーン</p>
+          <p class="text-sub text-sm leading-relaxed">シンプル・モダン・直線的なデザイン。白ベース＋紺＋テラコッタ、見出しに和文明朝を組み合わせる。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flow -->
+  <section id="flow" class="py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-3 tracking-wide">使い方</h2>
+      <p class="text-sub mb-10">訪問先で次の流れに沿って進めます。一度に全部聞かず、相手の負担を減らすことを優先します。</p>
+      <div class="grid md:grid-cols-4">
+        <div class="border-t-2 border-navy pt-6 md:border-r border-line px-4">
+          <p class="serif text-navy font-bold text-2xl mb-3">01</p>
+          <h3 class="font-bold text-navy mb-1">起動</h3>
+          <p class="text-sub text-sm leading-relaxed">Claude Codeで「LPを作って」または <code class="text-navy">/lp-generator</code> と伝えてスキルを呼び出す。</p>
+        </div>
+        <div class="border-t-2 border-navy pt-6 md:border-r border-line px-4">
+          <p class="serif text-navy font-bold text-2xl mb-3">02</p>
+          <h3 class="font-bold text-navy mb-1">ヒアリング</h3>
+          <p class="text-sub text-sm leading-relaxed">2〜3問ずつ会話形式で質問される。わからない項目は「お任せします」で進めてよい。</p>
+        </div>
+        <div class="border-t-2 border-navy pt-6 md:border-r border-line px-4">
+          <p class="serif text-navy font-bold text-2xl mb-3">03</p>
+          <h3 class="font-bold text-navy mb-1">ドラフト生成</h3>
+          <p class="text-sub text-sm leading-relaxed">最低限の項目が揃った時点で1枚のHTMLが生成される。未確定の情報は <code class="text-navy">[要確認]</code> として残る。</p>
+        </div>
+        <div class="px-4">
+          <p class="serif text-navy font-bold text-2xl mb-3">04</p>
+          <h3 class="font-bold text-navy mb-1">その場で確認・調整</h3>
+          <p class="text-sub text-sm leading-relaxed">ブラウザで開いて見てもらい、文言・色・写真などをその場で会話しながら微調整する。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hearing -->
+  <section id="hearing" class="bg-[#FAF8F4] py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-3 tracking-wide">ヒアリング項目</h2>
+      <p class="text-sub mb-10">優先順位の高いものから3ラウンドに分けて聞く。第1ラウンドだけでもドラフトは作成可能。</p>
+      <div class="grid md:grid-cols-3 gap-px bg-line">
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-3">第1ラウンド（骨格）</h3>
+          <ul class="text-sub text-sm leading-relaxed space-y-1.5 list-disc pl-4">
+            <li>会社名・屋号、業種</li>
+            <li>ターゲット顧客像</li>
+            <li>最終CTA（してほしい行動）</li>
+            <li>一番の強み・選ばれる理由</li>
+          </ul>
+        </div>
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-3">第2ラウンド（中身）</h3>
+          <ul class="text-sub text-sm leading-relaxed space-y-1.5 list-disc pl-4">
+            <li>サービス内容（3〜5の柱）</li>
+            <li>顧客が抱える課題・悩み</li>
+            <li>実績・数字（あれば）</li>
+            <li>お客様の声・事例（あれば）</li>
+          </ul>
+        </div>
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-3">第3ラウンド（仕上げ）</h3>
+          <ul class="text-sub text-sm leading-relaxed space-y-1.5 list-disc pl-4">
+            <li>連絡先（電話・メール・フォーム）</li>
+            <li>ロゴ・写真・カラー指定の有無</li>
+            <li>既存サイト・資料の有無</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Design -->
+  <section id="design" class="py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-3 tracking-wide">デザイン仕様（デフォルト）</h2>
+      <p class="text-sub mb-10">指定がない場合はこのトーンを使う。「シンプル・モダン・信頼感・親しみやすさ」を、白ベース＋直線的な輪郭＋和文明朝のアクセントで表現する。</p>
+      <div class="grid md:grid-cols-2 gap-10 mb-12">
+        <div>
+          <h3 class="font-bold text-navy mb-4">カラー</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 border border-line bg-white"></div>
+              <div class="text-sm"><span class="font-bold text-navy">背景</span> <span class="text-sub">#FFFFFF（白ベース）</span></div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10" style="background:#1E3A5F"></div>
+              <div class="text-sm"><span class="font-bold text-navy">メイン（信頼）</span> <span class="text-sub">#1E3A5F ダークネイビー</span></div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10" style="background:#D97B3F"></div>
+              <div class="text-sm"><span class="font-bold text-navy">アクセント（親しみ）</span> <span class="text-sub">#D97B3F テラコッタ</span></div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 border border-line" style="background:#E4E0D8"></div>
+              <div class="text-sm"><span class="font-bold text-navy">区切り線</span> <span class="text-sub">#E4E0D8（罫線・border用）</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="font-bold text-navy mb-4">フォント・形状</h3>
+          <ul class="text-sub text-sm leading-relaxed space-y-2 list-disc pl-4">
+            <li>見出し：<span class="serif text-navy">和文明朝（Shippori Mincho）</span> でおしゃれさ・上質感を出す</li>
+            <li>本文：Noto Sans JP</li>
+            <li><span class="font-bold text-navy">角丸は使わない</span>（直線的な輪郭でモダンに見せる）</li>
+            <li>影に頼らず、罫線・グリッドの分割線で構成する</li>
+            <li>写真を積極的に使い、テキストだけのLPにしない</li>
+          </ul>
+        </div>
+      </div>
+      <div class="bg-[#FAF8F4] border border-line p-7">
+        <h3 class="font-bold text-navy mb-3">標準セクション構成</h3>
+        <p class="text-sub text-sm leading-relaxed">
+          ヘッダー → ヒーロー → 課題提起 → サービス内容 → 強み・選ばれる理由 → 実績／お客様の声（あれば） → ご支援の流れ → FAQ（任意） → 最終CTA → フッター
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Output -->
+  <section id="output" class="bg-[#FAF8F4] py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-3 tracking-wide">出力形式</h2>
+      <div class="grid md:grid-cols-2 gap-px bg-line">
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-2">ファイル構成</h3>
+          <p class="text-sub text-sm leading-relaxed">単一HTMLファイル。<code class="text-navy">&lt;head&gt;</code>内でTailwind CDNとGoogle Fontsを読み込み、レスポンシブ対応（モバイル優先）で組む。</p>
+        </div>
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-2">ファイル名</h3>
+          <p class="text-sub text-sm leading-relaxed"><code class="text-navy">{会社名やプロジェクト名}-lp.html</code>。日本語名はローマ字スラッグ化する。</p>
+        </div>
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-2">画像</h3>
+          <p class="text-sub text-sm leading-relaxed">手元に写真がない場合は実写プレースホルダー（Unsplash等）や <code class="text-navy">placehold.co</code> を使用。本番写真が来たら<code class="text-navy">&lt;img src&gt;</code>を差し替えるだけで済む構造にする。</p>
+        </div>
+        <div class="bg-white p-7">
+          <h3 class="font-bold text-navy mb-2">未確定情報</h3>
+          <p class="text-sub text-sm leading-relaxed">電話番号・所在地など未確認の情報は <code class="text-navy">[要確認：項目名]</code> の形でプレースホルダーを残す。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tips -->
+  <section id="tips" class="py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="serif text-2xl font-bold text-navy mb-8 tracking-wide">運用Tips</h2>
+      <ul class="text-sub leading-relaxed space-y-3 list-disc pl-5 max-w-3xl">
+        <li>完璧なLPを1回で作ろうとしない。まずドラフトを見せて、その場の反応で文言・配色・写真を調整する想定で進める。</li>
+        <li>誇大表現（「絶対」「日本一」など裏取りできない主張）は避け、未確認の実績数字は <code class="text-navy">[要確認]</code> のまま残す。</li>
+        <li>CTAは「お問い合わせはこちら」より「無料相談を予約する」のように、行動が具体的にわかる文言にする。</li>
+        <li>スマホで見せて確認することが多いため、レスポンシブ表示を必ず確認する。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-line py-8">
+    <div class="max-w-5xl mx-auto px-6 text-center text-sub text-sm">
+      <p>lp-generator スキル説明書（<code class="text-navy">.claude/skills/lp-generator/SKILL.md</code> 準拠）</p>
+    </div>
+  </footer>
+
+</body>
+</html>

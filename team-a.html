@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram 商品・サービス紹介投稿スキル</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif; background: #f5f4f0; color: #1a1a18; line-height: 1.6; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .hero { padding: 2.5rem 2rem 2rem; background: #fff; border-radius: 16px; border: 0.5px solid #e0ddd4; margin-bottom: 1.25rem; }
+  .badge { display: inline-block; background: #e6f1fb; color: #185fa5; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; margin-bottom: 1rem; letter-spacing: 0.04em; }
+  .hero h1 { font-size: 24px; font-weight: 500; color: #1a1a18; margin-bottom: 0.6rem; }
+  .hero p { font-size: 15px; color: #5f5e5a; line-height: 1.7; }
+  .card { background: #fff; border: 0.5px solid #e0ddd4; border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 1.25rem; }
+  .section-title { font-size: 11px; font-weight: 500; color: #888780; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.25rem; }
+  .goal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .goal-item { background: #f5f4f0; border-radius: 10px; padding: 1rem 1.1rem; }
+  .goal-item .icon { font-size: 22px; margin-bottom: 8px; }
+  .goal-item h3 { font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 4px; }
+  .goal-item p { font-size: 13px; color: #5f5e5a; line-height: 1.55; }
+  .steps { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 14px; padding: 1rem 0; border-bottom: 0.5px solid #e0ddd4; }
+  .step:last-child { border-bottom: none; padding-bottom: 0; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #e6f1fb; color: #185fa5; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 3px; }
+  .step p { font-size: 13px; color: #5f5e5a; line-height: 1.55; }
+  .tag { display: inline-block; background: #faeeda; color: #633806; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-top: 5px; font-weight: 500; }
+  .output-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+  .output-card { background: #f5f4f0; border-radius: 10px; padding: 1rem; }
+  .output-card .label { font-size: 11px; font-weight: 500; color: #888780; letter-spacing: 0.05em; margin-bottom: 5px; }
+  .output-card h3 { font-size: 13px; font-weight: 500; color: #1a1a18; margin-bottom: 4px; }
+  .output-card p { font-size: 12px; color: #5f5e5a; line-height: 1.5; }
+  .structure-box { background: #f5f4f0; border-radius: 10px; padding: 1rem 1.25rem; font-size: 13px; color: #5f5e5a; line-height: 1.7; }
+  .structure-box strong { color: #1a1a18; font-weight: 500; }
+  .trigger-box { display: flex; align-items: center; gap: 14px; background: #f5f4f0; border-radius: 10px; padding: 1.1rem 1.25rem; }
+  .trigger-box .icon { font-size: 28px; flex-shrink: 0; }
+  .trigger-text { font-size: 14px; color: #5f5e5a; line-height: 1.6; }
+  .trigger-text strong { color: #1a1a18; font-size: 16px; font-weight: 500; display: block; margin-bottom: 3px; }
+  @media (max-width: 520px) {
+    .goal-grid { grid-template-columns: 1fr; }
+    .output-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge">Instagram スキル</div>
+    <h1>商品・サービス紹介投稿<br>自動生成スキル</h1>
+    <p>「売れる投稿」は表面的な情報では作れない。このスキルは会話形式のヒアリングで商品の背景・想い・強みを深く引き出し、保存・プロフィール訪問・購買につながるInstagram投稿文を3パターン自動生成する。</p>
+  </div>
+
+  <div class="card">
+    <div class="section-title">このスキルが目指すこと</div>
+    <div class="goal-grid">
+      <div class="goal-item">
+        <div class="icon">💬</div>
+        <h3>想いを言語化する</h3>
+        <p>「なぜ作ったか」の背景を3回深掘りし、読む人の心に刺さるストーリーに変換する</p>
+      </div>
+      <div class="goal-item">
+        <div class="icon">🎯</div>
+        <h3>刺さる相手に届ける</h3>
+        <p>年齢・性別・業種などターゲットを明確にし、その人が反応する言葉で投稿を設計する</p>
+      </div>
+      <div class="goal-item">
+        <div class="icon">⭐</div>
+        <h3>強みを3つに絞る</h3>
+        <p>数ある特徴の中から「最も刺さる3つ」に絞り込み、ぼやけない訴求軸を作る</p>
+      </div>
+      <div class="goal-item">
+        <div class="icon">✍️</div>
+        <h3>すぐ使える文章を出す</h3>
+        <p>フック〜CTA〜ハッシュタグまで、コピペして投稿できる文章を3パターン生成する</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ヒアリングの流れ（6ステップ）</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>商品・サービス名</h3>
+          <p>紹介したい商品またはサービスの名前を確認する</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>開発背景・想いの深掘り</h3>
+          <p>「なぜ作ったのか」を最低3回深掘り。きっかけ → 問題意識 → 解決への覚悟を引き出す</p>
+          <span class="tag">深掘り × 3回</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>ターゲット・対象</h3>
+          <p>年齢・性別・業種などを確認。まだ決まっていない場合は「一緒にリサーチしましょうか？」と提案する</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h3>強み・特徴の深掘り → 3つに絞る</h3>
+          <p>思いつく限り話してもらい、さらに深掘り。最後に最も刺さる3つを選んでユーザーに確認する</p>
+          <span class="tag">深掘り後に3つ厳選</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <h3>価格</h3>
+          <p>決まっていれば確認。未定の場合は類似商品の相場をリサーチして提案する</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div>
+          <h3>投稿の型を選択</h3>
+          <p>悩み訴求型 / 実績訴求型 / 共感型 の3種類から選ぶ。迷う場合はおすすめを提案する</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">生成される投稿文（3パターン）</div>
+    <div class="output-grid">
+      <div class="output-card">
+        <div class="label">案 A</div>
+        <h3>問いかけ型</h3>
+        <p>「〇〇で悩んでいませんか？」から始め、読者に語りかけるフックで掴む</p>
+      </div>
+      <div class="output-card">
+        <div class="label">案 B</div>
+        <h3>数字・実績型</h3>
+        <p>「〇〇人が選んだ」「満足度98%」など、数字で信頼を先に作るフック</p>
+      </div>
+      <div class="output-card">
+        <div class="label">案 C</div>
+        <h3>ストーリー型</h3>
+        <p>開発の想いや背景から入り、感情で共鳴させてから商品に誘導するフック</p>
+      </div>
+    </div>
+    <div class="structure-box">
+      各パターン共通の構成：<strong>フック → 共感・問題提起 → 商品紹介（ベネフィット）→ 証拠・信頼 → CTA → ハッシュタグ（10〜15個）</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">起動のしかた</div>
+    <div class="trigger-box">
+      <div class="icon">💬</div>
+      <div class="trigger-text">
+        <strong>「Instagramの投稿を作って」</strong>
+        Claudeにこう話しかけるだけでスキルが起動します。あとはClaudeの質問に答えていくだけで、すぐ使える投稿文が完成します。
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

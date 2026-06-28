@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>災害時AIエージェントチーム設計スキル</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: 'Segoe UI', 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* スライドシステム */
+.slide {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  padding: 56px 80px;
+  flex-direction: column;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.slide.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 共通タイポ */
+.tag {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #3b9eda;
+  margin-bottom: 16px;
+}
+h1 { font-size: 44px; font-weight: 700; line-height: 1.25; }
+h1 .hl { color: #58c4f8; }
+h2 { font-size: 28px; font-weight: 700; margin-bottom: 28px; }
+h2 .hl { color: #58c4f8; }
+.subtitle { font-size: 18px; color: #8b949e; margin-top: 12px; }
+.meta { font-size: 13px; color: #484f58; margin-top: 32px; }
+
+/* 課題リスト */
+.problem-list { display: flex; flex-direction: column; gap: 14px; }
+.problem-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(255,255,255,0.04);
+  border-left: 3px solid #da3b3b;
+  padding: 14px 20px;
+  border-radius: 0 8px 8px 0;
+}
+.problem-item .icon { font-size: 22px; flex-shrink: 0; }
+.problem-item p { font-size: 17px; line-height: 1.5; }
+
+/* 解決策グリッド */
+.os-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.os-card {
+  background: rgba(88, 196, 248, 0.07);
+  border: 1px solid rgba(88, 196, 248, 0.18);
+  padding: 16px 18px;
+  border-radius: 8px;
+}
+.os-card .q { font-size: 11px; color: #58c4f8; margin-bottom: 6px; letter-spacing: 0.5px; }
+.os-card .a { font-size: 15px; line-height: 1.4; }
+.os-note {
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #8b949e;
+  line-height: 1.6;
+}
+.os-note strong { color: #e6edf3; }
+
+/* エージェント図 */
+.agent-diagram { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.commander-box {
+  background: rgba(88, 196, 248, 0.12);
+  border: 1.5px solid #58c4f8;
+  padding: 12px 40px;
+  border-radius: 8px;
+  text-align: center;
+  width: 280px;
+}
+.commander-box .role { font-size: 11px; color: #58c4f8; margin-bottom: 4px; }
+.commander-box .name { font-size: 16px; font-weight: 700; }
+.arrow-down { color: #58c4f8; font-size: 18px; }
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+.agent-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 12px 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+.agent-card .role { font-size: 10px; color: #8b949e; margin-bottom: 4px; }
+.agent-card .name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+
+/* フロー */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.flow-box {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  padding: 16px 14px;
+  border-radius: 8px;
+  text-align: center;
+}
+.flow-box .label { font-size: 11px; color: #8b949e; margin-bottom: 6px; }
+.flow-box .val { font-size: 15px; font-weight: 600; }
+.flow-arrow { color: #58c4f8; font-size: 20px; flex-shrink: 0; }
+
+/* MVP ステップリスト */
+.step-list { display: flex; flex-direction: column; gap: 10px; }
+.step-item { display: flex; align-items: center; gap: 14px; }
+.step-num {
+  background: #58c4f8;
+  color: #0d1117;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.step-item p { font-size: 16px; }
+
+/* ロードマップ */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.phase-box {
+  background: rgba(255,255,255,0.04);
+  padding: 20px;
+  border-radius: 8px;
+}
+.phase-box .phase-tag {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.phase-box.current .phase-tag { color: #58c4f8; }
+.phase-box.next .phase-tag { color: #8b949e; }
+.phase-box ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.phase-box li { font-size: 15px; }
+.cta {
+  padding: 16px 20px;
+  background: rgba(88, 196, 248, 0.08);
+  border-radius: 8px;
+  font-size: 15px;
+  color: #8b949e;
+  text-align: center;
+}
+.cta strong { color: #58c4f8; }
+
+/* ナビ */
+.nav {
+  position: fixed;
+  bottom: 28px;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #e6edf3;
+  padding: 9px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.15s;
+}
+.nav-btn:hover {
+  background: rgba(88, 196, 248, 0.15);
+  border-color: #58c4f8;
+}
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.counter { font-size: 13px; color: #484f58; }
+
+/* プログレスバー */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: #58c4f8;
+  transition: width 0.3s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- SLIDE 1: タイトル -->
+<div class="slide active">
+  <div class="tag">Skill Design Document &nbsp;/&nbsp; MVP v0.1</div>
+  <h1>災害時<span class="hl">AIエージェント</span><br>チーム設計スキル</h1>
+  <div class="subtitle">Disaster Response Agent Team Designer</div>
+  <div class="meta">2026.06.28 &nbsp;|&nbsp; Claude Code × SHIFT GAS</div>
+</div>
+
+<!-- SLIDE 2: 課題 -->
+<div class="slide">
+  <h2><span class="hl">なぜ</span>今このスキルが必要か</h2>
+  <div class="problem-list">
+    <div class="problem-item">
+      <div class="icon">⚡</div>
+      <p>自治体の公式情報と現場実態が乖離し、避難者に届かない</p>
+    </div>
+    <div class="problem-item">
+      <div class="icon">👤</div>
+      <p>状況把握がリーダー1人に属人化し、当人不在で機能停止する</p>
+    </div>
+    <div class="problem-item">
+      <div class="icon">🌐</div>
+      <p>外国人・ペット連れ・要配慮者の情報が横展開されない</p>
+    </div>
+    <div class="problem-item">
+      <div class="icon">📷</div>
+      <p>SNS・現場写真に情報はあるが、整理・判断・共有に手間がかかる</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: 解決策 -->
+<div class="slide">
+  <h2>目指すもの：災害時の<span class="hl">共用OS</span>を設計する</h2>
+  <div class="os-grid">
+    <div class="os-card">
+      <div class="q">誰が何を担当するか</div>
+      <div class="a">各エージェントの役割と担当を明確化</div>
+    </div>
+    <div class="os-card">
+      <div class="q">何の情報を集めるか</div>
+      <div class="a">入力情報の種類・優先度を定義</div>
+    </div>
+    <div class="os-card">
+      <div class="q">誰に何を伝えるか</div>
+      <div class="a">対象者別の出力形式と配信経路を設計</div>
+    </div>
+    <div class="os-card">
+      <div class="q">何をAIが判断するか</div>
+      <div class="a">AI判断と人間確認の境界を明示</div>
+    </div>
+  </div>
+  <div class="os-note">
+    単なる情報収集ツールではなく、<strong>災害時の行動設計を支援するAIチーム設計ツール</strong>として構築する。
+  </div>
+</div>
+
+<!-- SLIDE 4: エージェント構成 -->
+<div class="slide">
+  <h2>エージェント<span class="hl">9役割</span>の構成</h2>
+  <div class="agent-diagram">
+    <div class="commander-box">
+      <div class="role">指揮・チーム設計</div>
+      <div class="name">Commander Agent</div>
+    </div>
+    <div class="arrow-down">▼</div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="role">現地情報受付</div>
+        <div class="name">Situation Intake</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">画像・写真分析</div>
+        <div class="name">Image Analysis</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">避難先・宿泊整理</div>
+        <div class="name">Shelter & Hotel</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">多言語対応</div>
+        <div class="name">Multilingual Support</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">ペット同行避難</div>
+        <div class="name">Pet Evacuation</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">物資・人員管理</div>
+        <div class="name">Resource Allocation</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">市民向け告知</div>
+        <div class="name">Public Message</div>
+      </div>
+      <div class="agent-card">
+        <div class="role">情報検証・リスク判定</div>
+        <div class="name">Risk Review</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: MVP -->
+<div class="slide">
+  <h2>MVP：<span class="hl">最初に作るもの</span></h2>
+  <div class="flow-row">
+    <div class="flow-box">
+      <div class="label">入力</div>
+      <div class="val">JSON / Markdown</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">
+      <div class="label">処理</div>
+      <div class="val">CLI ツール<br>（Python / Node）</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">
+      <div class="label">出力</div>
+      <div class="val">エージェント設計書<br>（Markdown）</div>
+    </div>
+  </div>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <p>README.md — プロジェクト概要と使い方</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <p>入力JSONスキーマ — 災害種別・地域・対象者・課題を定義</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <p>エージェントチーム設計ロジック</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <p>Markdown出力テンプレート</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <p>入力サンプル3件（ホテル・避難所・外国人支援）</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: ロードマップ -->
+<div class="slide">
+  <h2><span class="hl">拡張</span>ロードマップ</h2>
+  <div class="roadmap-grid">
+    <div class="phase-box current">
+      <div class="phase-tag">PHASE 1（MVP）</div>
+      <ul>
+        <li>✓ CLI ツール実装</li>
+        <li>✓ エージェント設計ロジック</li>
+        <li>✓ Markdown 出力</li>
+        <li>✓ サンプル3件</li>
+      </ul>
+    </div>
+    <div class="phase-box next">
+      <div class="phase-tag">PHASE 2 以降</div>
+      <ul>
+        <li>→ LINE 入力対応</li>
+        <li>→ 画像分析連携</li>
+        <li>→ 多言語出力</li>
+        <li>→ ホテル BCP テンプレート</li>
+        <li>→ Web ダッシュボード化</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cta">
+    次のアクション：<strong>Claude Code で MVP 実装を開始する</strong>
+  </div>
+</div>
+
+<!-- ナビゲーション -->
+<div class="nav">
+  <button class="nav-btn" id="btnPrev" onclick="go(-1)">← 前へ</button>
+  <span class="counter" id="counter">1 / 6</span>
+  <button class="nav-btn" id="btnNext" onclick="go(1)">次へ →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(n, total - 1));
+    slides[cur].classList.add('active');
+    document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+    document.getElementById('btnPrev').disabled = cur === 0;
+    document.getElementById('btnNext').disabled = cur === total - 1;
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+  }
+
+  function go(dir) { show(cur + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') go(-1);
+  });
+
+  show(0);
+</script>
+</body>
+</html>

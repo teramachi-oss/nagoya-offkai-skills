@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code実践オフ会 in 名古屋 — チーム制作スキル集</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#1e293b;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --sub:#64748b;
+    --line:#e2e8f0;
+    --accent:#0d9488;
+    --accent-soft:#ccfbf1;
+    --pdf:#b45309;
+    --pdf-soft:#fef3c7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+    color:var(--ink);
+    background:#f1f5f9;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    background:linear-gradient(135deg,#0f172a,#1e3a5f);
+    color:#fff;
+    padding:56px 24px 48px;
+    text-align:center;
+  }
+  header .eyebrow{
+    font-size:.8rem;letter-spacing:.18em;color:#94a3b8;
+    text-transform:uppercase;margin-bottom:14px;
+  }
+  header h1{
+    font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;line-height:1.35;
+  }
+  header .date{margin-top:14px;color:#cbd5e1;font-size:.95rem}
+  .lead{
+    max-width:680px;margin:28px auto 0;color:#e2e8f0;font-size:.98rem;
+  }
+  main{max-width:1080px;margin:0 auto;padding:48px 24px 64px}
+  .count{
+    color:var(--sub);font-size:.9rem;margin-bottom:24px;text-align:center;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px;
+    display:flex;flex-direction:column;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(15,23,42,.10)}
+  .card .top{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;
+  }
+  .team{
+    font-size:.78rem;font-weight:700;letter-spacing:.08em;color:var(--accent);
+    background:var(--accent-soft);padding:4px 10px;border-radius:999px;
+  }
+  .badge{
+    font-size:.7rem;font-weight:700;letter-spacing:.05em;padding:3px 9px;border-radius:6px;
+  }
+  .badge.html{background:var(--accent-soft);color:var(--accent)}
+  .badge.pdf{background:var(--pdf-soft);color:var(--pdf)}
+  .card h2{
+    font-size:1.12rem;font-weight:700;line-height:1.45;margin-bottom:8px;
+  }
+  .card p{color:var(--sub);font-size:.9rem;flex:1}
+  .card a.open{
+    margin-top:18px;display:inline-flex;align-items:center;gap:6px;
+    background:var(--ink);color:#fff;text-decoration:none;
+    padding:10px 16px;border-radius:9px;font-size:.9rem;font-weight:600;
+    align-self:flex-start;transition:background .15s ease;
+  }
+  .card a.open:hover{background:var(--accent)}
+  footer{
+    text-align:center;color:var(--sub);font-size:.82rem;
+    padding:32px 24px 48px;border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Claude Code 実践オフ会 in 名古屋</div>
+  <h1>チーム制作スキル集</h1>
+  <div class="date">2026.6.28（日）</div>
+  <p class="lead">この日、8チームがClaude Codeで「業務に効くスキル」を1つずつ作り上げました。各チームの成果物をまとめています。気になったスキルは、ぜひ自分の業務に持ち帰ってください。</p>
+</header>
+
+<main>
+  <div class="count">全8チーム</div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM A</span><span class="badge html">HTML</span></div>
+      <h2>Instagram 商品・サービス紹介投稿スキル</h2>
+      <p>商品やサービスを、Instagram投稿用の文章に整えるスキル。</p>
+      <a class="open" href="team-a.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM B</span><span class="badge html">HTML</span></div>
+      <h2>災害時AIエージェントチーム設計スキル</h2>
+      <p>災害時に動くAIエージェントのチーム構成を設計するスキル。</p>
+      <a class="open" href="team-b.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM C</span><span class="badge pdf">PDF</span></div>
+      <h2>Repeat Lab — 実店舗リピート施策エージェント</h2>
+      <p>実店舗が「また来てもらう」仕組みを、リサーチ→分析→企画→アウトプットで整えるエージェント。LINE配信が主戦場。</p>
+      <a class="open" href="team-c.pdf" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM D</span><span class="badge pdf">PDF</span></div>
+      <h2>カリキュラム設計スキル</h2>
+      <p>研修・講座のカリキュラム（回数・時期・メニュー・課題）を設計するスキル。</p>
+      <a class="open" href="team-d.pdf" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM E</span><span class="badge html">HTML</span></div>
+      <h2>shift-manager（シフト管理スキル）</h2>
+      <p>勤務シフトの作成・管理を支援するスキル。</p>
+      <a class="open" href="team-e.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM F</span><span class="badge html">HTML</span></div>
+      <h2>instant-webapp（即席Webアプリ生成）</h2>
+      <p>その場で動く小さなWebアプリを素早く生成するスキル。</p>
+      <a class="open" href="team-f.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM G</span><span class="badge html">HTML</span></div>
+      <h2>ブログ記事作成ツール</h2>
+      <p>テーマからブログ記事を作成するスキル。</p>
+      <a class="open" href="team-g.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+    <div class="card">
+      <div class="top"><span class="team">TEAM H</span><span class="badge html">HTML</span></div>
+      <h2>lp-generator（LP生成スキル）</h2>
+      <p>ランディングページを生成するスキル。</p>
+      <a class="open" href="team-h.html" target="_blank" rel="noopener">開く →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Claude Code 実践オフ会 in 名古屋 ／ 2026.6.28
+</footer>
+</body>
+</html>

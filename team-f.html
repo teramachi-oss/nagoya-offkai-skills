@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>instant-webapp ｜ 3分プレゼン</title>
+<style>
+  :root{
+    --ink:#0e1530; --sub:#9fb0e0; --accent:#2f6df6; --accent2:#7b5cff; --gold:#ffb020;
+    --bg0:#0b1024; --bg1:#141d3d; --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Segoe UI",sans-serif;
+    color:#eef2ff; background:radial-gradient(1200px 700px at 70% -10%,#1c2a5e 0%,#0b1024 55%);
+    overflow:hidden; -webkit-font-smoothing:antialiased;
+  }
+  /* deck */
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;animation:in .45s cubic-bezier(.2,.7,.2,1)}
+  .slide.on{display:flex}
+  @keyframes in{from{opacity:0;transform:translateY(18px) scale(.99)}to{opacity:1;transform:none}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:clamp(12px,1.6vw,15px);
+    font-weight:800;letter-spacing:.08em;color:#9db4ff;text-transform:uppercase;margin-bottom:18px}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  h1{font-size:clamp(30px,6vw,68px);line-height:1.12;letter-spacing:.01em;font-weight:900}
+  h1 .g{background:linear-gradient(90deg,#5b8cff,#a98bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-size:clamp(24px,4.4vw,46px);line-height:1.2;font-weight:900;margin-bottom:6px}
+  .lead{font-size:clamp(15px,2.3vw,22px);color:#c2cdf2;margin-top:18px;max-width:24em;line-height:1.7}
+  .big{font-size:clamp(20px,3vw,30px);font-weight:800;line-height:1.5}
+  .sub{color:#9fb0e0}
+  /* step row */
+  .steps{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+  .step{flex:1 1 180px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px 18px 16px;backdrop-filter:blur(6px)}
+  .step .n{font-size:13px;font-weight:900;color:#8aa2ff;letter-spacing:.05em}
+  .step .t{font-size:clamp(16px,2.1vw,21px);font-weight:800;margin:7px 0 5px}
+  .step .d{font-size:clamp(12px,1.5vw,14px);color:#aab8e6;line-height:1.6}
+  .step .ar{color:#9fb0e0}
+  /* timeline */
+  .tl{margin-top:24px;display:flex;flex-direction:column;gap:11px;max-width:40em}
+  .tl .row{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
+    border-radius:13px;padding:13px 16px}
+  .tl .time{flex:none;font-variant-numeric:tabular-nums;font-weight:900;color:var(--gold);
+    font-size:clamp(13px,1.7vw,17px);min-width:92px}
+  .tl .txt{font-size:clamp(13px,1.8vw,17px);line-height:1.5}
+  .tl .txt b{color:#fff}
+  /* two col */
+  .cols{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px}
+  .col{flex:1 1 260px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .col h3{font-size:14px;letter-spacing:.04em;margin-bottom:12px}
+  .col.before h3{color:#ff8a8a}
+  .col.after h3{color:#5ce0a3}
+  .col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .col li{font-size:clamp(13px,1.8vw,16px);padding-left:24px;position:relative;color:#d6def7;line-height:1.5}
+  .col.before li::before{content:"✕";position:absolute;left:0;color:#ff7a7a;font-weight:900}
+  .col.after li::before{content:"✓";position:absolute;left:0;color:#5ce0a3;font-weight:900}
+  .cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .pill{background:linear-gradient(90deg,#2f6df6,#7b5cff);color:#fff;font-weight:800;
+    padding:14px 26px;border-radius:999px;font-size:clamp(15px,2vw,19px);text-decoration:none;
+    box-shadow:0 10px 30px rgba(79,90,255,.4)}
+  .url{font-size:clamp(13px,1.7vw,17px);color:#9db4ff;font-weight:700}
+  /* chrome */
+  .top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+    padding:16px 22px;font-size:13px;color:#9fb0e0;z-index:5}
+  .brand{font-weight:900;letter-spacing:.02em;color:#cdd8ff}
+  .brand b{color:var(--gold)}
+  .timer{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+  .timer .clock{font-size:18px;font-weight:900;letter-spacing:.04em}
+  .timer .clock.warn{color:var(--gold)} .timer .clock.over{color:#ff7a7a}
+  .tbtn{background:rgba(255,255,255,.1);border:1px solid var(--line);color:#dfe6ff;border-radius:9px;
+    padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tbtn:hover{background:rgba(255,255,255,.18)}
+  .progress{position:fixed;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.08);z-index:5}
+  .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4a86ff,#7b5cff);transition:width .4s}
+  .dots{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:6}
+  .dots b{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:.2s}
+  .dots b.on{background:var(--gold);transform:scale(1.25)}
+  .nav{position:fixed;bottom:16px;right:22px;display:flex;gap:8px;z-index:6}
+  .nav button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.08);color:#fff;font-size:18px;cursor:pointer}
+  .nav button:hover{background:rgba(255,255,255,.18)}
+  .hint{position:fixed;bottom:16px;left:22px;font-size:11px;color:#6b78a8;z-index:5}
+  .page{position:fixed;top:18px;left:50%;transform:translateX(-50%);font-size:12px;color:#7e8cba;z-index:5}
+  @media(max-width:560px){ .top{padding:12px 14px} .slide{padding:9vh 7vw} .nav{bottom:50px} }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">⚡ <b>instant-webapp</b> ／ ながら起業のタクミ</div>
+  <div class="timer">
+    <span class="clock" id="clock">3:00</span>
+    <button class="tbtn" id="tbtn" onclick="toggleTimer()">▶ 計測</button>
+  </div>
+</div>
+<div class="page" id="page">1 / 6</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide on">
+    <div class="eyebrow"><span class="dot"></span>30秒で伝わる、3分で売れる</div>
+    <h1>アイデアを、<br><span class="g">30分で「公開URL」</span>に変える。</h1>
+    <p class="lead">企画書はもう作らない。思いついたその場で“動くWebアプリ”にして、URLを手渡すスキル。</p>
+    <div class="cta">
+      <span class="pill" style="cursor:default">instant-webapp</span>
+      <span class="url">▶ スペース／→ キーで進む</span>
+    </div>
+  </section>
+
+  <!-- 2. WHAT -->
+  <section class="slide">
+    <div class="eyebrow"><span class="dot"></span>① 何をするスキルか</div>
+    <h2>思いつき → <span class="g">その場で動くアプリ＋URL</span></h2>
+    <p class="big sub">やることは、たった3ステップ。</p>
+    <div class="steps">
+      <div class="step"><div class="n">STEP 1</div><div class="t">🪞 絞る</div>
+        <div class="d">明鏡レンズで「起こす変化」を1行に固定。機能は<b>1つだけ</b>に削る。</div></div>
+      <div class="step"><div class="n">STEP 2</div><div class="t">⚙️ 作る</div>
+        <div class="d">外部依存ゼロ・スマホ対応・サーバー送信なしの<b>単一HTML</b>で実装。</div></div>
+      <div class="step"><div class="n">STEP 3</div><div class="t">🚀 公開</div>
+        <div class="d">Vercelに即デプロイ。<b>誰でも開ける公開URL</b>がその場で手に入る。</div></div>
+    </div>
+  </section>
+
+  <!-- 3. GOAL / WHY -->
+  <section class="slide">
+    <div class="eyebrow"><span class="dot"></span>② このスキルで目指すもの</div>
+    <h2>「説明」ではなく<span class="g">「動くもの」</span>で信頼を掴む</h2>
+    <div class="tl">
+      <div class="row"><div class="time">作る前に</div><div class="txt"><b>盛らない。</b>市場が欲しい“変化”から逆算して1機能に絞る（マーケットイン）。</div></div>
+      <div class="row"><div class="time">作ったら</div><div class="txt"><b>必ず公開する。</b>ローカルで満足しない。URLになって初めて価値が出る。</div></div>
+      <div class="row"><div class="time">その結果</div><div class="txt">アイデア止まりの人を、<b>「今日URLを持っている人」</b>に変える。</div></div>
+    </div>
+  </section>
+
+  <!-- 4. 3-min script -->
+  <section class="slide">
+    <div class="eyebrow"><span class="dot"></span>③ 3分プレゼンの台本（この粒度で話す）</div>
+    <h2>3分で、相手の手の中で動かす</h2>
+    <div class="tl">
+      <div class="row"><div class="time">0:00–0:30</div><div class="txt"><b>つかみ</b>：「これ、30分で作りました」と公開URLを見せる</div></div>
+      <div class="row"><div class="time">0:30–1:30</div><div class="txt"><b>実演</b>：相手のスマホで実際に触ってもらう（体験させる）</div></div>
+      <div class="row"><div class="time">1:30–2:30</div><div class="txt"><b>仕組み</b>：絞る→単一HTML→Vercel公開、の3ステップを説明</div></div>
+      <div class="row"><div class="time">2:30–3:00</div><div class="txt"><b>締め</b>：「あなたのアイデアも、今日URLにできます」</div></div>
+    </div>
+  </section>
+
+  <!-- 5. before/after -->
+  <section class="slide">
+    <div class="eyebrow"><span class="dot"></span>ビフォー → アフター</div>
+    <h2>変わるのは「スピード」と「証拠」</h2>
+    <div class="cols">
+      <div class="col before"><h3>BEFORE（今まで）</h3>
+        <ul><li>アイデアはあるが形にならない</li><li>企画書・口頭説明で止まる</li><li>検証まで数週間かかる</li><li>「で、実物は？」に弱い</li></ul></div>
+      <div class="col after"><h3>AFTER（このスキル）</h3>
+        <ul><li>30分で公開URLができる</li><li>その場でデモ・体験させられる</li><li>反応をその日に取れる</li><li>動くものが最強の信頼になる</li></ul></div>
+    </div>
+  </section>
+
+  <!-- 6. CTA -->
+  <section class="slide">
+    <div class="eyebrow"><span class="dot"></span>最初のお客さんへ</div>
+    <h1>あなたの<span class="g">「最初のお客さんを掴むアプリ」</span>、<br>今日いっしょに作りませんか？</h1>
+    <p class="lead">5問のヒアリングから、その場で公開URLまで。実物を見ながら決められます。</p>
+    <div class="cta">
+      <a class="pill" href="https://first-customer-app.vercel.app" target="_blank" rel="noopener">▶ デモを見る（資産棚卸アプリ）</a>
+      <span class="url" id="contact" style="cursor:pointer" onclick="alert('ここに、しんたさんの連絡先（LINE / メール / 申込フォーム）を1つ設置します。')">→ 相談する</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="progress"><i id="bar"></i></div>
+<div class="dots" id="dots"></div>
+<div class="nav"><button onclick="go(-1)">←</button><button onclick="go(1)">→</button></div>
+<div class="hint">← → / Space / クリックで操作 ・ F で全画面</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsBox=document.getElementById('dots');
+  let i=0;
+  slides.forEach((_,n)=>{const b=document.createElement('b');b.onclick=()=>set(n);dotsBox.appendChild(b);});
+  const dots=[...dotsBox.children];
+  function set(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+    document.getElementById('page').textContent=(i+1)+' / '+slides.length;
+  }
+  function go(d){ set(i+d); }
+  set(0);
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();go(1);}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1);}
+    else if(e.key==='Home')set(0); else if(e.key==='End')set(slides.length-1);
+    else if(e.key==='f'||e.key==='F'){ if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen(); }
+  });
+  document.getElementById('deck').addEventListener('click',e=>{ if(!e.target.closest('a,button,.url,.pill')) go(1); });
+
+  /* 3-minute countdown */
+  let total=180, left=180, tid=null, running=false;
+  const clock=document.getElementById('clock'), tbtn=document.getElementById('tbtn');
+  function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  function tick(){
+    left--; if(left<0)left=0;
+    clock.textContent=(left===0?'-':'')+fmt(left);
+    clock.className='clock'+(left<=30&&left>0?' warn':'')+(left===0?' over':'');
+    if(left===0){clearInterval(tid);running=false;tbtn.textContent='● 終了';clock.textContent='TIME';}
+  }
+  function toggleTimer(){
+    if(running){clearInterval(tid);running=false;tbtn.textContent='▶ 再開';return;}
+    if(left===0){left=total;clock.textContent=fmt(left);clock.className='clock';}
+    running=true;tbtn.textContent='⏸ 停止';tid=setInterval(tick,1000);
+  }
+</script>
+</body>
+</html>
